@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: calendar-was
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/photocalendar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    username: ${DB_USER:photocalendar}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      # 스캐폴딩 단계: 로컬 MySQL이 없어도 앱이 기동되도록 풀 초기화 실패를 무시한다.
+      # 실제 DB 연동 단계에서 정상 접속정보(환경변수)를 주입하면 그대로 동작한다.
+      initialization-fail-timeout: -1
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
