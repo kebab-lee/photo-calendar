@@ -22,11 +22,11 @@
 ## 디렉터리 (예정)
 
 ```
-/calender-was    Spring Boot
-/calender-web   React + Vite
+/calendar-was    Spring Boot
+/calendar-web    React + Vite
+/design-ref      디자인 시각 참고용 (빌드 제외)
+/docs            기획서(PRD) 등 문서
 ```
-
-> 실제 구조 확정 후 이 섹션을 갱신할 것.
 
 ---
 

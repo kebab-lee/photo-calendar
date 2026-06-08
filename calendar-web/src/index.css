@@ -1,0 +1,44 @@
+/* ===== 디자인 토큰 (design-ref/index.html 무드 이식) ===== */
+:root{
+  --bg:#ece1d0; --bg-2:#efe6d6; --card:#faf5ea; --card-2:#f5eedf;
+  --ink:#2c2620; --ink-soft:#6c6052; --ink-faint:#9c8f7c;
+  --line:rgba(72,56,40,0.13); --line-soft:rgba(72,56,40,0.07);
+  --terra:#c0654a; --terra-deep:#a8503a; --terra-soft:rgba(192,101,74,0.12);
+  --sun:#b5402e; --sat:#3f6781;
+  --shadow-sm:0 1px 2px rgba(74,52,32,0.06), 0 2px 8px rgba(74,52,32,0.05);
+  --shadow-md:0 4px 14px rgba(74,52,32,0.10), 0 10px 36px rgba(74,52,32,0.08);
+  --grain:0.045;
+  --serif:'Noto Serif KR', serif;
+  --sans:'Noto Sans KR', system-ui, sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#1a1613; --bg-2:#201b16; --card:#2a241e; --card-2:#312a22;
+  --ink:#ece1d0; --ink-soft:#b2a695; --ink-faint:#867a6a;
+  --line:rgba(235,222,202,0.13); --line-soft:rgba(235,222,202,0.06);
+  --terra:#d07a5d; --terra-deep:#c0654a; --terra-soft:rgba(208,122,93,0.16);
+  --sun:#d9745f; --sat:#7ea7c2;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.32);
+  --grain:0.06;
+}
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; padding:0; }
+body{
+  font-family:var(--sans); color:var(--ink); background:var(--bg);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  transition:background .5s ease, color .5s ease;
+  min-height:100vh;
+}
+/* paper grain overlay */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  opacity:var(--grain); mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] body::before{ mix-blend-mode:screen; }
+#root{ position:relative; z-index:1; min-height:100vh; }
+::selection{ background:var(--terra-soft); }
+.serif{ font-family:var(--serif); }
+button{ font-family:inherit; cursor:pointer; }
+input,textarea{ font-family:inherit; }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
