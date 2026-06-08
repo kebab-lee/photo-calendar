@@ -1,0 +1,20 @@
+# 의존성 / 빌드 결과물
+node_modules/
+calender-web/dist/
+calender-was/target/
+calender-was/build/
+
+# 환경변수 · 시크릿 (DB 비번, JWT 키 등)
+.env
+.env.local
+**/application-local.yml
+**/application-secret.*
+
+# 서버에 저장되는 업로드 사진 (코드 아님)
+uploads/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store

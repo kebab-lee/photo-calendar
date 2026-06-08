@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<script>try{var t=localStorage.getItem('pd_theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>나의 포토 다이어리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ece1d0; --bg-2:#efe6d6; --card:#faf5ea; --card-2:#f5eedf;
+  --ink:#2c2620; --ink-soft:#6c6052; --ink-faint:#9c8f7c;
+  --line:rgba(72,56,40,0.13); --line-soft:rgba(72,56,40,0.07);
+  --terra:#c0654a; --terra-deep:#a8503a; --terra-soft:rgba(192,101,74,0.12);
+  --sun:#b5402e; --sat:#3f6781;
+  --shadow-sm:0 1px 2px rgba(74,52,32,0.06), 0 2px 8px rgba(74,52,32,0.05);
+  --shadow-md:0 4px 14px rgba(74,52,32,0.10), 0 10px 36px rgba(74,52,32,0.08);
+  --grain:0.045;
+  --serif:'Noto Serif KR', serif;
+  --sans:'Noto Sans KR', system-ui, sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#1a1613; --bg-2:#201b16; --card:#2a241e; --card-2:#312a22;
+  --ink:#ece1d0; --ink-soft:#b2a695; --ink-faint:#867a6a;
+  --line:rgba(235,222,202,0.13); --line-soft:rgba(235,222,202,0.06);
+  --terra:#d07a5d; --terra-deep:#c0654a; --terra-soft:rgba(208,122,93,0.16);
+  --sun:#d9745f; --sat:#7ea7c2;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.32);
+  --grain:0.06;
+}
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; padding:0; }
+body{
+  font-family:var(--sans); color:var(--ink); background:var(--bg);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  transition:background .5s ease, color .5s ease;
+  min-height:100vh;
+}
+/* paper grain overlay */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  opacity:var(--grain); mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] body::before{ mix-blend-mode:screen; }
+#root{ position:relative; z-index:1; }
+::selection{ background:var(--terra-soft); }
+.serif{ font-family:var(--serif); }
+button{ font-family:inherit; cursor:pointer; }
+input,textarea{ font-family:inherit; }
+/* scrollbar */
+*::-webkit-scrollbar{ width:10px; height:10px; }
+*::-webkit-scrollbar-thumb{ background:var(--line); border-radius:20px; border:3px solid transparent; background-clip:padding-box; }
+
+@keyframes floatIn{ from{ transform:translateY(12px); } to{ transform:none; } }
+@keyframes slideUp{ from{ transform:translateY(26px); } to{ transform:none; } }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="Calendar.jsx"></script>
+<script type="text/babel" src="DetailView.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
