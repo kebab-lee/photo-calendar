@@ -13,6 +13,9 @@ public interface TodoMapper {
     /** sort_order ASC. */
     List<Todo> findByDayEntryId(Long dayEntryId);
 
+    /** 소유권 포함 조회(todo→day_entry→user_id). 본인 소유가 아니면 null. */
+    Todo findByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
     /** 생성된 PK는 todo.id에 채워진다(useGeneratedKeys). */
     int insert(Todo todo);
 

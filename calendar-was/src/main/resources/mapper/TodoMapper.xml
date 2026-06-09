@@ -10,6 +10,15 @@
         ORDER BY sort_order ASC
     </select>
 
+    <!-- 소유권 포함 조회: 해당 todo가 userId 소유일 때만 1건, 아니면 없음 -->
+    <select id="findByIdAndUserId" resultType="com.photocalendar.calendar.domain.Todo">
+        SELECT t.id, t.day_entry_id, t.content, t.is_done, t.sort_order
+        FROM todo t
+        JOIN day_entry de ON de.id = t.day_entry_id
+        WHERE t.id = #{id}
+          AND de.user_id = #{userId}
+    </select>
+
     <insert id="insert" parameterType="com.photocalendar.calendar.domain.Todo"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO todo (day_entry_id, content, is_done, sort_order)

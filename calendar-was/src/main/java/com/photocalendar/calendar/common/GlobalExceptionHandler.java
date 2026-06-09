@@ -11,10 +11,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.photocalendar.calendar.exception.EmailAlreadyExistsException;
 import com.photocalendar.calendar.exception.InvalidCredentialsException;
+import com.photocalendar.calendar.exception.NotFoundException;
 
 /**
  * 전역 예외 처리.
- * - 공통(common): 요청 바디 검증 실패(@Valid)·날짜/월 형식 오류 → 400
+ * - 공통(common): 요청 바디 검증 실패(@Valid)·날짜/월 형식 오류·잘못된 인자 → 400, 리소스 없음 → 404
  * - 대상별(target): 인증 도메인 예외 → 409 / 401
  */
 @RestControllerAdvice
@@ -34,6 +35,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadDate(Exception e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("INVALID_DATE", "날짜 형식이 올바르지 않습니다."));
+    }
+
+    /** 잘못된 인자(예: 순서변경 orderedIds 불일치). */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("BAD_REQUEST", e.getMessage()));
+    }
+
+    /** 리소스 없음 또는 본인 소유 아님. */
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("NOT_FOUND", e.getMessage()));
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
