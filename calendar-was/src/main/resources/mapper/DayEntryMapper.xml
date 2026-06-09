@@ -28,4 +28,24 @@
         SET comment = #{comment}
         WHERE id = #{id}
     </update>
+
+    <!-- 월별 요약: 1단계는 한 장(sort_order=0)만, todo는 LEFT JOIN 집계.
+         이미지가 최대 1장이라 todo와 동시 조인해도 카운트가 부풀지 않음.
+         별칭을 DTO 필드명과 일치시켜 auto-mapping. de.id가 PK라 ONLY_FULL_GROUP_BY OK. -->
+    <select id="findMonthlySummary"
+            resultType="com.photocalendar.calendar.dto.EntrySummaryResponse">
+        SELECT de.entry_date                                 AS date,
+               MAX(di.thumb_url)                             AS thumbUrl,
+               MAX(di.fit)                                   AS fit,
+               (de.comment IS NOT NULL AND de.comment &lt;&gt; '') AS hasComment,
+               COUNT(t.id)                                   AS todoTotal,
+               COALESCE(SUM(t.is_done), 0)                   AS todoDone
+        FROM day_entry de
+        LEFT JOIN day_image di ON di.day_entry_id = de.id AND di.sort_order = 0
+        LEFT JOIN todo t       ON t.day_entry_id = de.id
+        WHERE de.user_id = #{userId}
+          AND de.entry_date BETWEEN #{startDate} AND #{endDate}
+        GROUP BY de.id
+        ORDER BY de.entry_date
+    </select>
 </mapper>

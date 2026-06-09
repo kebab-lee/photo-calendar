@@ -1,17 +1,20 @@
 package com.photocalendar.calendar.common;
 
+import java.time.format.DateTimeParseException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.photocalendar.calendar.exception.EmailAlreadyExistsException;
 import com.photocalendar.calendar.exception.InvalidCredentialsException;
 
 /**
  * 전역 예외 처리.
- * - 공통(common): 요청 바디 검증 실패(@Valid) → 400
+ * - 공통(common): 요청 바디 검증 실패(@Valid)·날짜/월 형식 오류 → 400
  * - 대상별(target): 인증 도메인 예외 → 409 / 401
  */
 @RestControllerAdvice
@@ -24,6 +27,13 @@ public class GlobalExceptionHandler {
                 .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
                 .orElse("잘못된 요청입니다.");
         return ResponseEntity.badRequest().body(new ErrorResponse("VALIDATION_ERROR", message));
+    }
+
+    /** month=YYYY-MM 파싱 실패, {date} 경로 변수 형식 오류 등. */
+    @ExceptionHandler({DateTimeParseException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResponse> handleBadDate(Exception e) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("INVALID_DATE", "날짜 형식이 올바르지 않습니다."));
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)

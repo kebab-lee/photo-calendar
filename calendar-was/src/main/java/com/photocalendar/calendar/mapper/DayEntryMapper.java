@@ -1,11 +1,13 @@
 package com.photocalendar.calendar.mapper;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.photocalendar.calendar.domain.DayEntry;
+import com.photocalendar.calendar.dto.EntrySummaryResponse;
 
 @Mapper
 public interface DayEntryMapper {
@@ -20,4 +22,9 @@ public interface DayEntryMapper {
     int insert(DayEntry dayEntry);
 
     int updateComment(@Param("id") Long id, @Param("comment") String comment);
+
+    /** 달력 월별 요약(존재하는 day_entry만). 썸네일/fit/hasComment/투두 카운트 집계. */
+    List<EntrySummaryResponse> findMonthlySummary(@Param("userId") Long userId,
+                                                  @Param("startDate") LocalDate startDate,
+                                                  @Param("endDate") LocalDate endDate);
 }
