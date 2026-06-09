@@ -1,5 +1,6 @@
 // 달력 유틸 (design-ref/data.jsx 헬퍼 이식).
 export const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+export const WEEKDAYS_FULL = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
 export const pad = (n) => String(n).padStart(2, '0');
 

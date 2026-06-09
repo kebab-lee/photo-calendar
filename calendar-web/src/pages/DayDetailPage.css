@@ -1,0 +1,460 @@
+/* design-ref/DetailView.jsx 무드 이식. 토큰은 index.css 공통 변수. */
+.dt-scroll {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+}
+.dt-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 40px) 120px;
+  animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+/* 데스크톱 2단 */
+@media (min-width: 861px) {
+  .dt-wrap {
+    max-width: 1160px;
+  }
+  .dt-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 3.5vw, 52px);
+    align-items: start;
+  }
+  .dt-right {
+    padding-top: 6px;
+  }
+  .dt-left {
+    position: sticky;
+    top: clamp(16px, 3vw, 40px);
+  }
+}
+
+.dt-flash {
+  margin-bottom: 14px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: var(--sun-soft, rgba(181, 64, 46, 0.12));
+  color: var(--sun);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 24/9;
+  min-height: 200px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #19140f;
+  box-shadow: var(--shadow-md);
+}
+@media (max-width: 640px) {
+  .banner {
+    aspect-ratio: 16/11;
+    border-radius: 18px;
+  }
+}
+.banner .bimg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.banner .bshade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(15, 11, 8, 0.78) 0%,
+    rgba(15, 11, 8, 0.32) 30%,
+    rgba(15, 11, 8, 0) 52%
+  );
+}
+.banner.empty {
+  background: repeating-linear-gradient(135deg, var(--card) 0 14px, var(--card-2) 14px 28px);
+}
+.banner .empty-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-weight: 500;
+}
+.banner .empty-hint svg {
+  font-size: 30px;
+  opacity: 0.7;
+}
+
+.back-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(28, 20, 14, 0.5);
+  backdrop-filter: blur(8px);
+  color: #fdf7ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15em;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, background 0.2s;
+}
+.back-btn:hover {
+  transform: translateX(-2px);
+  background: rgba(28, 20, 14, 0.72);
+}
+.banner.empty .back-btn {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.b-date {
+  position: absolute;
+  left: clamp(20px, 3vw, 34px);
+  bottom: clamp(18px, 3vw, 30px);
+  color: #fdf7ee;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+.banner.empty .b-date {
+  color: var(--ink);
+  text-shadow: none;
+}
+.b-date .ym {
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  opacity: 0.92;
+}
+.b-date .dl {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+.b-date .dl .d {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(48px, 8vw, 82px);
+  line-height: 0.9;
+}
+.b-date .dl .w {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 24px);
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.act-row {
+  display: flex;
+  gap: 10px;
+  margin-top: clamp(18px, 2.4vw, 26px);
+  flex-wrap: wrap;
+}
+.btn {
+  height: 48px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  font-size: 14.5px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn svg {
+  font-size: 1.2em;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn.primary {
+  background: var(--terra);
+  border-color: var(--terra);
+  color: #fdf7ee;
+}
+.btn.primary:hover {
+  background: var(--terra-deep);
+}
+.btn.ghost:hover {
+  background: var(--card-2);
+  color: var(--ink);
+}
+
+.radio-row {
+  display: flex;
+  gap: 26px;
+  margin-top: 20px;
+}
+.radio {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  font-weight: 500;
+  user-select: none;
+  transition: color 0.2s;
+}
+.radio.on {
+  color: var(--ink);
+  font-weight: 600;
+}
+.radio .dot {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+.radio.on .dot {
+  border-color: var(--terra);
+}
+.radio.on .dot::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--terra);
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin: clamp(28px, 3.4vw, 40px) 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.field-label svg {
+  font-size: 1.15em;
+  color: var(--ink-faint);
+}
+.field-label .save-stat {
+  margin-left: auto;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+}
+.field-label .save-stat.ok {
+  color: var(--ok);
+}
+@media (min-width: 861px) {
+  .dt-right .field-label:first-child {
+    margin-top: 0;
+  }
+}
+
+.memo-box {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  color: var(--ink);
+  padding: 16px 18px;
+  font-size: 15.5px;
+  line-height: 1.7;
+  box-shadow: inset 0 1px 2px rgba(74, 52, 32, 0.05);
+  transition: border-color 0.2s, background 0.2s;
+}
+.memo-box::placeholder {
+  color: var(--ink-faint);
+}
+.memo-box:focus {
+  outline: none;
+  border-color: var(--terra);
+  background: var(--card);
+}
+
+.todo-add {
+  display: flex;
+  gap: 10px;
+}
+.todo-add input {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  color: var(--ink);
+  padding: 0 18px;
+  font-size: 15px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.todo-add input::placeholder {
+  color: var(--ink-faint);
+}
+.todo-add input:focus {
+  outline: none;
+  border-color: var(--terra);
+  background: var(--card);
+}
+.todo-add button {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 14px;
+  border: none;
+  background: var(--terra);
+  color: #fdf7ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s, transform 0.15s;
+}
+.todo-add button:hover {
+  background: var(--terra-deep);
+  transform: translateY(-1px);
+}
+
+.todo-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.18s, opacity 0.2s, transform 0.12s;
+}
+.todo.done {
+  background: var(--card-2);
+}
+.todo.dragging {
+  box-shadow: var(--shadow-md);
+  opacity: 0.92;
+}
+.todo .grip {
+  color: var(--ink-faint);
+  cursor: grab;
+  font-size: 1.2em;
+  display: flex;
+  touch-action: none;
+  padding: 2px;
+}
+.todo .grip:active {
+  cursor: grabbing;
+}
+.todo .cbox {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fdf7ee;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.todo .cbox svg {
+  font-size: 0.92em;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.todo.done .cbox {
+  background: var(--terra);
+  border-color: var(--terra);
+}
+.todo.done .cbox svg {
+  opacity: 1;
+  transform: none;
+}
+.todo .ttxt {
+  flex: 1;
+  font-size: 15px;
+  color: var(--ink);
+  cursor: text;
+  transition: color 0.2s;
+}
+.todo.done .ttxt {
+  color: var(--ink-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-faint);
+}
+.todo .tedit {
+  flex: 1;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--card-2);
+  border: 1px solid var(--terra);
+  border-radius: 9px;
+  padding: 7px 10px;
+}
+.todo .tedit:focus {
+  outline: none;
+}
+.todo .del {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: none;
+  background: transparent;
+  color: var(--ink-faint);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  transition: color 0.2s, background 0.2s;
+}
+.todo .del:hover {
+  color: var(--sun);
+  background: var(--terra-soft);
+}
+.todo-empty {
+  padding: 22px;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  margin-top: 14px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import RequireAuth from './auth/RequireAuth.jsx';
 import AuthPage from './pages/AuthPage.jsx';
 import CalendarPage from './pages/CalendarPage.jsx';
-import DayDetailPlaceholder from './pages/DayDetailPlaceholder.jsx';
+import DayDetailPage from './pages/DayDetailPage.jsx';
 
 export default function App() {
   return (
@@ -21,7 +21,7 @@ export default function App() {
         path="/entries/:date"
         element={
           <RequireAuth>
-            <DayDetailPlaceholder />
+            <DayDetailPage />
           </RequireAuth>
         }
       />

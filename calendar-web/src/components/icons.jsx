@@ -69,3 +69,61 @@ export function Logout(props) {
     </svg>
   );
 }
+
+export function ArrowLeft(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M19 12H5M5 12l6-6M5 12l6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Photo(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2.2" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="8.5" cy="10" r="1.6" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M4 17l4.5-4 3.5 3 3-2.5L20 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Note(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M6 3.5h12a1.5 1.5 0 011.5 1.5v14a1.5 1.5 0 01-1.5 1.5H6A1.5 1.5 0 014.5 19V5A1.5 1.5 0 016 3.5z" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function Plus(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function Trash(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M4 7h16M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7M6.5 7l.8 12a1.6 1.6 0 001.6 1.5h6.2a1.6 1.6 0 001.6-1.5L17.5 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Grip(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <g fill="currentColor">
+        <circle cx="9" cy="6" r="1.4" />
+        <circle cx="15" cy="6" r="1.4" />
+        <circle cx="9" cy="12" r="1.4" />
+        <circle cx="15" cy="12" r="1.4" />
+        <circle cx="9" cy="18" r="1.4" />
+        <circle cx="15" cy="18" r="1.4" />
+      </g>
+    </svg>
+  );
+}
