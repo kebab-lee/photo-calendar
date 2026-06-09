@@ -7,6 +7,8 @@
   --sun:#b5402e; --sat:#3f6781;
   --shadow-sm:0 1px 2px rgba(74,52,32,0.06), 0 2px 8px rgba(74,52,32,0.05);
   --shadow-md:0 4px 14px rgba(74,52,32,0.10), 0 10px 36px rgba(74,52,32,0.08);
+  --shadow-lg:0 8px 30px rgba(74,52,32,0.12), 0 24px 60px rgba(74,52,32,0.10);
+  --ok:#3f7a52; --ok-soft:rgba(63,122,82,0.14); --sun-soft:rgba(181,64,46,0.12);
   --grain:0.045;
   --serif:'Noto Serif KR', serif;
   --sans:'Noto Sans KR', system-ui, sans-serif;
@@ -19,6 +21,8 @@
   --sun:#d9745f; --sat:#7ea7c2;
   --shadow-sm:0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.25);
   --shadow-md:0 4px 16px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.32);
+  --shadow-lg:0 10px 34px rgba(0,0,0,0.45), 0 28px 70px rgba(0,0,0,0.4);
+  --ok:#6bbf86; --ok-soft:rgba(107,191,134,0.18); --sun-soft:rgba(217,116,95,0.16);
   --grain:0.06;
 }
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }

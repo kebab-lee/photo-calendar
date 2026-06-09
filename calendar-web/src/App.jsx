@@ -1,12 +1,22 @@
-import './App.css'
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-// 스캐폴딩 단계: 빈 셸 화면.
-// 실제 Calendar / DetailView / Auth 화면은 다음 단계에서 구현한다. (design-ref 참고)
+import RequireAuth from './auth/RequireAuth.jsx';
+import AuthPage from './pages/AuthPage.jsx';
+import Home from './pages/Home.jsx';
+
 export default function App() {
   return (
-    <main className="shell">
-      <h1 className="serif shell-title">나의 포토 다이어리</h1>
-      <p className="shell-sub">곧 이곳에 달력이 채워집니다.</p>
-    </main>
-  )
+    <Routes>
+      <Route path="/login" element={<AuthPage />} />
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <Home />
+          </RequireAuth>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }

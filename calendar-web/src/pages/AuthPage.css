@@ -1,0 +1,279 @@
+/* design-ref/Auth.jsx 무드 이식. 토큰은 index.css 공통 변수 사용. */
+.auth-stage {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px 48px;
+  gap: clamp(20px, 4vh, 40px);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, background 0.2s, color 0.2s;
+  z-index: 20;
+}
+.theme-toggle:hover {
+  background: var(--card-2);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.theme-toggle svg {
+  font-size: 1.15em;
+}
+
+.brand {
+  text-align: center;
+  animation: floatIn 0.6s ease both;
+}
+.brand .mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--terra);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+.brand .mark svg {
+  font-size: 1.5em;
+}
+.brand h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(30px, 5vw, 40px);
+  margin: 12px 0 0;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.brand p {
+  margin: 9px 0 0;
+  color: var(--ink-faint);
+  font-size: 14.5px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--line-soft);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: clamp(26px, 4vw, 38px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    animation: cardSwap 0.42s cubic-bezier(0.2, 0.85, 0.3, 1) both;
+  }
+}
+.card h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+.card .sub {
+  color: var(--ink-faint);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+.field > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+.inp {
+  position: relative;
+}
+.inp input {
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  color: var(--ink);
+  padding: 0 46px 0 16px;
+  font-size: 15px;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.inp input::placeholder {
+  color: var(--ink-faint);
+}
+.inp input:focus {
+  outline: none;
+  border-color: var(--terra);
+  background: var(--card);
+  box-shadow: 0 0 0 3px var(--terra-soft);
+}
+.inp.invalid input {
+  border-color: var(--sun);
+  background: var(--card);
+}
+.inp.invalid input:focus {
+  box-shadow: 0 0 0 3px rgba(181, 64, 46, 0.14);
+}
+.inp.valid input {
+  border-color: var(--ok);
+}
+.inp .stat {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  font-size: 1.05em;
+  pointer-events: none;
+}
+.inp.valid .stat {
+  color: var(--ok);
+}
+.inp.invalid .stat {
+  color: var(--sun);
+}
+.err {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--sun);
+  font-size: 12.5px;
+  margin-top: 7px;
+  font-weight: 500;
+  animation: floatIn 0.25s ease both;
+}
+.err svg {
+  font-size: 1.1em;
+  flex: none;
+}
+
+.submit {
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  border: none;
+  background: var(--terra);
+  color: #fdf7ee;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.submit:hover:not(:disabled) {
+  background: var(--terra-deep);
+  transform: translateY(-1px);
+}
+.submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+.submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.submit.shake {
+  animation: shake 0.4s;
+}
+
+.alt {
+  text-align: center;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.alt button {
+  border: none;
+  background: none;
+  color: var(--terra);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 2px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--terra-soft);
+  transition: color 0.2s;
+}
+.alt button:hover {
+  color: var(--terra-deep);
+}
+
+/* 서버 에러(401/409/400 등) 배너 */
+.err-banner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--sun-soft, rgba(181, 64, 46, 0.12));
+  color: var(--sun);
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  animation: floatIn 0.3s ease both;
+}
+.err-banner svg {
+  font-size: 1.2em;
+  flex: none;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cardSwap {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
