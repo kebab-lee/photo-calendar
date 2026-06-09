@@ -44,3 +44,28 @@ export function Moon(props) {
     </svg>
   );
 }
+
+export function ChevronLeft(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function ChevronRight(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Logout(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="1em" height="1em" {...props}>
+      <path d="M14 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 12h10m0 0l-3-3m3 3l-3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

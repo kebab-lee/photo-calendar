@@ -1,0 +1,280 @@
+/* design-ref/Calendar.jsx 무드 이식. 토큰은 index.css 공통 변수. */
+.cal-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 48px) 80px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cal-wrap {
+    animation: floatIn 0.6s ease both;
+  }
+}
+.cal-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--terra);
+  font-weight: 700;
+  font-size: clamp(15px, 1.6vw, 18px);
+  letter-spacing: 0.01em;
+}
+.cal-brand svg {
+  font-size: 1.45em;
+}
+.cal-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: clamp(20px, 3vw, 38px);
+  flex-wrap: wrap;
+}
+.cal-title {
+  flex: none;
+}
+.cal-title .yr {
+  font-size: clamp(13px, 1.3vw, 15px);
+  color: var(--ink-faint);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+.cal-title .mo {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(42px, 6vw, 74px);
+  line-height: 0.95;
+  margin-top: 4px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.cal-ctrls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pill {
+  height: 44px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+.pill:hover {
+  background: var(--card-2);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.pill:active {
+  transform: translateY(0);
+}
+.pill.txt {
+  padding: 0 17px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pill.sq {
+  width: 44px;
+}
+.pill svg {
+  font-size: 1.15em;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 0.5vw, 7px);
+  margin-top: clamp(20px, 2.5vw, 34px);
+}
+.week-row .wd {
+  text-align: left;
+  padding: 11px 4px 11px 12px;
+  font-size: clamp(12px, 1.2vw, 14px);
+  font-weight: 600;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  border-radius: 11px;
+  background: var(--card-2);
+}
+.week-row .wd.sun {
+  color: var(--sun);
+}
+.week-row .wd.sat {
+  color: var(--sat);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 0.5vw, 7px);
+  margin-top: clamp(8px, 1vw, 12px);
+}
+.grid.loading {
+  opacity: 0.6;
+}
+.cell {
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.2s, border-color 0.2s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cell {
+    animation: floatIn 0.5s ease both;
+  }
+}
+.cell.blank {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+.cell:not(.blank):hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.cell.has-photo {
+  background: #1c1714;
+}
+.cell.today {
+  border: 2px solid var(--terra);
+  box-shadow: 0 0 0 4px var(--terra-soft), var(--shadow-md);
+}
+
+.cell .ph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cell .ph-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 14, 10, 0.42) 0%,
+    rgba(20, 14, 10, 0) 32%,
+    rgba(20, 14, 10, 0) 55%,
+    rgba(20, 14, 10, 0.5) 100%
+  );
+}
+
+.cell .num {
+  position: absolute;
+  top: 9px;
+  left: 11px;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(15px, 1.7vw, 21px);
+  line-height: 1;
+  color: var(--ink);
+}
+.cell.sun .num {
+  color: var(--sun);
+}
+.cell.sat .num {
+  color: var(--sat);
+}
+.cell.has-photo .num {
+  color: #fdf7ee;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.cell .prog {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: clamp(11px, 1.15vw, 13px);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.cell .prog svg {
+  font-size: 1.05em;
+}
+.cell .prog.done {
+  color: var(--terra);
+}
+.cell.has-photo .prog {
+  color: #fdf7ee;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.55);
+}
+.cell .prog .frac {
+  font-variant-numeric: tabular-nums;
+}
+
+.cell .memo-dot {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--terra);
+  box-shadow: 0 0 0 3px var(--terra-soft);
+}
+.cell.has-photo .memo-dot {
+  background: #fdf7ee;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.cal-status {
+  margin-top: 40px;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .cell {
+    border-radius: 13px;
+  }
+  .cell .num {
+    top: 6px;
+    left: 8px;
+  }
+  .cell .prog {
+    left: 7px;
+    bottom: 6px;
+  }
+  .cell .prog svg {
+    display: none;
+  }
+  .cell .memo-dot {
+    top: 7px;
+    right: 7px;
+    width: 6px;
+    height: 6px;
+  }
+  .week-row .wd {
+    text-align: center;
+    padding: 9px 0;
+  }
+  .cal-ctrls .pill.txt {
+    padding: 0 13px;
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

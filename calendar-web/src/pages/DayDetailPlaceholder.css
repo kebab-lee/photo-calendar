@@ -1,0 +1,46 @@
+.detail-placeholder {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+}
+.dp-back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  height: 44px;
+  padding: 0 16px 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.dp-back:hover {
+  background: var(--card-2);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.dp-back svg {
+  font-size: 1.1em;
+}
+.dp-date {
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700;
+  margin: 0;
+}
+.dp-note {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 14px;
+}

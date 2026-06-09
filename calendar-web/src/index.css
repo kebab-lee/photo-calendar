@@ -46,3 +46,4 @@ body::before{
 button{ font-family:inherit; cursor:pointer; }
 input,textarea{ font-family:inherit; }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+.route-loading{ min-height:100vh; display:flex; align-items:center; justify-content:center; color:var(--ink-faint); }
