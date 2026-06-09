@@ -16,3 +16,6 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # snake_case 컬럼 <-> camelCase 프로퍼티 자동 매핑 (resultMap 수동 작성 불필요)
+    map-underscore-to-camel-case: true

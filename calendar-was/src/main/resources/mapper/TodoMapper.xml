@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.photocalendar.calendar.mapper.TodoMapper">
+
+    <select id="findByDayEntryId" resultType="com.photocalendar.calendar.domain.Todo">
+        SELECT id, day_entry_id, content, is_done, sort_order
+        FROM todo
+        WHERE day_entry_id = #{dayEntryId}
+        ORDER BY sort_order ASC
+    </select>
+
+    <insert id="insert" parameterType="com.photocalendar.calendar.domain.Todo"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO todo (day_entry_id, content, is_done, sort_order)
+        VALUES (#{dayEntryId}, #{content}, #{isDone}, #{sortOrder})
+    </insert>
+
+    <update id="update" parameterType="com.photocalendar.calendar.domain.Todo">
+        UPDATE todo
+        SET content = #{content},
+            is_done = #{isDone}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM todo
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateSortOrder">
+        UPDATE todo
+        SET sort_order = #{sortOrder}
+        WHERE id = #{id}
+    </update>
+
+    <select id="maxSortOrder" resultType="java.lang.Integer">
+        SELECT MAX(sort_order)
+        FROM todo
+        WHERE day_entry_id = #{dayEntryId}
+    </select>
+</mapper>

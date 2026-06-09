@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.photocalendar.calendar.mapper.DayEntryMapper">
+
+    <select id="findByUserIdAndEntryDate" resultType="com.photocalendar.calendar.domain.DayEntry">
+        SELECT id, user_id, entry_date, comment, updated_at
+        FROM day_entry
+        WHERE user_id = #{userId}
+          AND entry_date = #{entryDate}
+    </select>
+
+    <select id="findById" resultType="com.photocalendar.calendar.domain.DayEntry">
+        SELECT id, user_id, entry_date, comment, updated_at
+        FROM day_entry
+        WHERE id = #{id}
+    </select>
+
+    <!-- updated_at은 DB DEFAULT/ON UPDATE에 위임 -->
+    <insert id="insert" parameterType="com.photocalendar.calendar.domain.DayEntry"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO day_entry (user_id, entry_date, comment)
+        VALUES (#{userId}, #{entryDate}, #{comment})
+    </insert>
+
+    <update id="updateComment">
+        UPDATE day_entry
+        SET comment = #{comment}
+        WHERE id = #{id}
+    </update>
+</mapper>

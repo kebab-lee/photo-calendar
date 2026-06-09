@@ -34,8 +34,9 @@
 
 ### 네이밍
 
-- **DB 테이블/컬럼:** 소문자 연결, 구분자 없음 (예: `dayentryid`, `passwordhash`, `sortorder`)
-- 자바/JS 코드 내부는 각 언어 표준(camelCase) 사용. DB ↔ 코드 매핑 지점에서만 변환.
+- **DB 테이블/컬럼:** snake_case (예: `day_entry_id`, `password_hash`, `sort_order`)
+- 자바/JS 코드 내부는 각 언어 표준(camelCase). DB ↔ 코드 매핑은
+  MyBatis `map-underscore-to-camel-case` 설정으로 자동 변환.
 
 ### 일반 원칙
 
@@ -80,6 +81,7 @@
 - 보안 민감 값(시크릿 키, DB 비밀번호 등)은 코드에 하드코딩하지 말고 환경변수/설정 파일로 분리.
 
 ## 작업 방식
+
 - 큰 기능은 먼저 계획(plan)만 보여주고, 내 승인 후 구현 시작.
 - 구현 후엔 실제 실행한 명령과 결과(테스트/curl 출력)를 증거로 보여줄 것.
 - 기능 단위로 git commit. 한 번에 여러 기능 섞지 말 것.

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.photocalendar.calendar.mapper.DayImageMapper">
+
+    <!-- 1단계 한 장 운영: sort_order 최솟값 1건 -->
+    <select id="findByDayEntryId" resultType="com.photocalendar.calendar.domain.DayImage">
+        SELECT id, day_entry_id, image_url, thumb_url, fit, sort_order, created_at
+        FROM day_image
+        WHERE day_entry_id = #{dayEntryId}
+        ORDER BY sort_order ASC
+        LIMIT 1
+    </select>
+
+    <!-- created_at은 DB DEFAULT에 위임 -->
+    <insert id="insert" parameterType="com.photocalendar.calendar.domain.DayImage"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO day_image (day_entry_id, image_url, thumb_url, fit, sort_order)
+        VALUES (#{dayEntryId}, #{imageUrl}, #{thumbUrl}, #{fit}, #{sortOrder})
+    </insert>
+
+    <delete id="deleteByDayEntryId">
+        DELETE FROM day_image
+        WHERE day_entry_id = #{dayEntryId}
+    </delete>
+
+    <update id="updateFit">
+        UPDATE day_image
+        SET fit = #{fit}
+        WHERE day_entry_id = #{dayEntryId}
+    </update>
+</mapper>
