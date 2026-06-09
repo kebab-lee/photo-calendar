@@ -45,12 +45,14 @@ public class ImageService {
 
         DayEntry entry = getOrCreateEntry(userId, date);
         DayImage existing = dayImageMapper.findByDayEntryId(entry.getId());
+
+        // 1) 새 파일을 먼저 생성한다. 리사이즈가 실패해도 옛 이미지는 그대로 보존됨.
+        StoredImage stored = imageStorage.storeResized(image);
+
+        // 2) DB 갱신(옛 행 제거 후 새 행 insert).
         if (existing != null) {
-            imageStorage.deleteFiles(existing.getImageUrl(), existing.getThumbUrl());
             dayImageMapper.deleteByDayEntryId(entry.getId());
         }
-
-        StoredImage stored = imageStorage.storeResized(image);
         DayImage dayImage = new DayImage();
         dayImage.setDayEntryId(entry.getId());
         dayImage.setImageUrl(stored.imageUrl());
@@ -58,6 +60,11 @@ public class ImageService {
         dayImage.setFit(fit);
         dayImage.setSortOrder(0);
         dayImageMapper.insert(dayImage);
+
+        // 3) 옛 파일은 마지막에 삭제(best-effort). 실패해도 고아 파일이 남을 뿐 깨진 참조는 안 생김.
+        if (existing != null) {
+            imageStorage.deleteFiles(existing.getImageUrl(), existing.getThumbUrl());
+        }
         return new ImageResponse(dayImage.getImageUrl(), dayImage.getThumbUrl(), dayImage.getFit());
     }
 
@@ -74,8 +81,9 @@ public class ImageService {
     @Transactional
     public void delete(Long userId, LocalDate date) {
         DayImage image = requireImage(userId, date);
-        imageStorage.deleteFiles(image.getImageUrl(), image.getThumbUrl());
+        // DB 행을 먼저 지우고(트랜잭션 보호), 파일은 마지막에 삭제 → 깨진 참조 대신 고아 파일로 완화.
         dayImageMapper.deleteByDayEntryId(image.getDayEntryId());
+        imageStorage.deleteFiles(image.getImageUrl(), image.getThumbUrl());
     }
 
     private DayImage requireImage(Long userId, LocalDate date) {
