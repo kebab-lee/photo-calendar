@@ -4,8 +4,11 @@ server:
 spring:
   application:
     name: calendar-was
+  autoconfigure:
+    # JWT 전용이라 기본 인메모리 유저(generated password) 불필요
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/photocalendar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/photocalendar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false}
     username: ${DB_USER:photocalendar}
     password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,3 +22,12 @@ mybatis:
   configuration:
     # snake_case 컬럼 <-> camelCase 프로퍼티 자동 매핑 (resultMap 수동 작성 불필요)
     map-underscore-to-camel-case: true
+
+# 인증/JWT (1단계: access token 단일). 보안값은 환경변수로 주입, 운영에선 반드시 교체.
+app:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-change-me-to-a-long-random-secret-at-least-32-bytes-1234567890}
+    expiration-days: ${JWT_EXPIRATION_DAYS:7}
+  cors:
+    # 프론트(Vite dev) 연동용. 운영 도메인은 환경변수로 주입.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
