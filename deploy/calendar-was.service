@@ -1,0 +1,21 @@
+# /etc/systemd/system/calendar-was.service
+# Photo Calendar 백엔드(Spring Boot jar). 서버는 실행만 — 빌드는 로컬에서.
+[Unit]
+Description=Photo Calendar backend (Spring Boot)
+After=network.target
+
+[Service]
+Type=simple
+User=kebab
+WorkingDirectory=/home/kebab/projects/kebab-calendar/was-01
+EnvironmentFile=/home/kebab/projects/kebab-calendar/was-01/app.env
+# JDK21 절대경로로 호출 → 기존 트레이딩(JDK17) 기본 java와 충돌 방지.
+# 서버 실제 경로로 수정: `update-alternatives --list java` 또는 `dpkg -L openjdk-21-jre-headless | grep bin/java`
+# 메모리 빠듯(available ~1.1GB) → 힙 상한 -Xmx384m (필요시 조정)
+ExecStart=/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx384m -jar app.jar
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
