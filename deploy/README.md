@@ -46,20 +46,17 @@ java -version   # 기본은 여전히 17이어야 정상(트레이딩 영향 없
 mkdir -p ~/projects/kebab-calendar/uploads
 ```
 
-### MySQL(Docker 컨테이너) DB·계정 생성
+### MySQL(Docker 컨테이너 `trading_mysql`, 포트 3306) DB·계정 생성
 ```bash
-docker ps          # MySQL 컨테이너 이름 / published 포트 확인 (예: 0.0.0.0:3306->3306)
-MYSQL=<컨테이너이름>
-
-docker exec -i "$MYSQL" mysql -uroot -p <<'SQL'
+docker exec -i trading_mysql mysql -uroot -p <<'SQL'
 CREATE DATABASE IF NOT EXISTS photocalendar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS 'photocalendar'@'%' IDENTIFIED BY '여기에_DB_비밀번호';
 GRANT ALL PRIVILEGES ON photocalendar.* TO 'photocalendar'@'%';
 FLUSH PRIVILEGES;
 SQL
 ```
-> 컨테이너 네트워크 특성상 계정 host는 `'%'`. 백엔드는 host에 published된 포트(보통 3306)로 접속.
-> 스키마 import는 **2번(전송)으로 `schema.sql`이 올라온 뒤** 진행.
+> 컨테이너 네트워크 특성상 계정 host는 `'%'`. 백엔드는 host published 포트 3306으로 접속.
+> 스키마 import는 **2번(전송)으로 `schema.sql`이 올라온 뒤** 진행(아래).
 
 ---
 
@@ -75,7 +72,7 @@ SSH_HOST=kebab@kebabServer \
 
 스키마 import(전송 후 1회):
 ```bash
-docker exec -i "$MYSQL" mysql -uphotocalendar -p photocalendar \
+docker exec -i trading_mysql mysql -uphotocalendar -p photocalendar \
   < ~/projects/kebab-calendar/was-01/schema.sql
 ```
 
