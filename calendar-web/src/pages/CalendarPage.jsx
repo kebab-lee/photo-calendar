@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMonthlySummary } from '../api/entries.js';
@@ -119,6 +119,61 @@ export default function CalendarPage() {
   };
   const openDay = useCallback((date) => navigate('/entries/' + date), [navigate]);
 
+  // 스와이프로 달 이동: 가로 제스처일 때만 grid를 따라 움직이고, 임계값을 넘으면 prev/next 호출
+  const gridRef = useRef(null);
+  const swipeRef = useRef({ x: 0, y: 0, dx: 0, active: false, horiz: null });
+  const wheelRef = useRef({ dx: 0, lockUntil: 0 });
+  const SWIPE_THRESHOLD = 60;
+
+  const onTouchStart = (e) => {
+    const t = e.touches[0];
+    swipeRef.current = { x: t.clientX, y: t.clientY, dx: 0, active: true, horiz: null };
+    if (gridRef.current) gridRef.current.style.transition = 'none';
+  };
+  const onTouchMove = (e) => {
+    const s = swipeRef.current;
+    if (!s.active) return;
+    const t = e.touches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (s.horiz === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      s.horiz = Math.abs(dx) > Math.abs(dy);
+    }
+    if (!s.horiz) return;
+    s.dx = dx;
+    if (gridRef.current) gridRef.current.style.transform = `translateX(${dx * 0.4}px)`;
+  };
+  const onTouchEnd = () => {
+    const s = swipeRef.current;
+    if (!s.active) return;
+    s.active = false;
+    const g = gridRef.current;
+    if (g) {
+      g.style.transition = 'transform 0.2s ease';
+      g.style.transform = '';
+    }
+    if (s.horiz && Math.abs(s.dx) >= SWIPE_THRESHOLD) {
+      if (s.dx < 0) next();
+      else prev();
+    }
+  };
+  const onWheel = (e) => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    const w = wheelRef.current;
+    const now = Date.now();
+    if (now < w.lockUntil) {
+      w.dx = 0;
+      return;
+    }
+    w.dx += e.deltaX;
+    if (Math.abs(w.dx) >= 120) {
+      if (w.dx > 0) next();
+      else prev();
+      w.dx = 0;
+      w.lockUntil = now + 500;
+    }
+  };
+
   const lead = firstWeekday(year, month);
   const total = daysInMonth(year, month);
   const cells = [];
@@ -181,7 +236,17 @@ export default function CalendarPage() {
       {error ? (
         <div className="cal-status">{error}</div>
       ) : (
-        <div className={'grid' + (loading ? ' loading' : '')}>{cells}</div>
+        <div
+          className={'grid' + (loading ? ' loading' : '')}
+          ref={gridRef}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onTouchCancel={onTouchEnd}
+          onWheel={onWheel}
+        >
+          {cells}
+        </div>
       )}
     </div>
   );
