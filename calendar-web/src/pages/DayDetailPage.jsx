@@ -276,7 +276,7 @@ export default function DayDetailPage() {
                   <span>사진을 추가해 보세요</span>
                 </div>
               )}
-              <button className="back-btn" onClick={() => navigate('/')} aria-label="뒤로">
+              <button className="back-btn" onClick={() => navigate('/?m=' + date.slice(0, 7))} aria-label="뒤로">
                 <ArrowLeft />
               </button>
               <div className="b-date">

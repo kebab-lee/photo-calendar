@@ -113,6 +113,7 @@
   gap: clamp(4px, 0.5vw, 7px);
   margin-top: clamp(8px, 1vw, 12px);
   touch-action: pan-y;
+  user-select: none;
 }
 .grid.loading {
   opacity: 0.6;

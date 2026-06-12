@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { getMonthlySummary } from '../api/entries.js';
 import { useAuth } from '../auth/context.js';
@@ -65,9 +65,18 @@ export default function CalendarPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { theme, toggle } = useTheme();
+  const [params] = useSearchParams();
   const [today] = useState(todayParts);
-  const [year, setYear] = useState(today.y);
-  const [month, setMonth] = useState(today.m);
+  // 상세 화면에서 돌아올 때 ?m=YYYY-MM으로 보던 월을 유지한다
+  const initMonth = (() => {
+    const m = params.get('m');
+    if (m && /^\d{4}-(0[1-9]|1[0-2])$/.test(m)) {
+      return { y: Number(m.slice(0, 4)), m: Number(m.slice(5, 7)) - 1 };
+    }
+    return { y: today.y, m: today.m };
+  })();
+  const [year, setYear] = useState(initMonth.y);
+  const [month, setMonth] = useState(initMonth.m);
   const [byDay, setByDay] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -123,19 +132,18 @@ export default function CalendarPage() {
   const gridRef = useRef(null);
   const swipeRef = useRef({ x: 0, y: 0, dx: 0, active: false, horiz: null });
   const wheelRef = useRef({ dx: 0, lockUntil: 0 });
+  const suppressClickRef = useRef(false);
   const SWIPE_THRESHOLD = 60;
 
-  const onTouchStart = (e) => {
-    const t = e.touches[0];
-    swipeRef.current = { x: t.clientX, y: t.clientY, dx: 0, active: true, horiz: null };
+  const beginSwipe = (x, y) => {
+    swipeRef.current = { x, y, dx: 0, active: true, horiz: null };
     if (gridRef.current) gridRef.current.style.transition = 'none';
   };
-  const onTouchMove = (e) => {
+  const moveSwipe = (x, y) => {
     const s = swipeRef.current;
     if (!s.active) return;
-    const t = e.touches[0];
-    const dx = t.clientX - s.x;
-    const dy = t.clientY - s.y;
+    const dx = x - s.x;
+    const dy = y - s.y;
     if (s.horiz === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       s.horiz = Math.abs(dx) > Math.abs(dy);
     }
@@ -143,7 +151,7 @@ export default function CalendarPage() {
     s.dx = dx;
     if (gridRef.current) gridRef.current.style.transform = `translateX(${dx * 0.4}px)`;
   };
-  const onTouchEnd = () => {
+  const endSwipe = () => {
     const s = swipeRef.current;
     if (!s.active) return;
     s.active = false;
@@ -152,9 +160,39 @@ export default function CalendarPage() {
       g.style.transition = 'transform 0.2s ease';
       g.style.transform = '';
     }
-    if (s.horiz && Math.abs(s.dx) >= SWIPE_THRESHOLD) {
+    if (!s.horiz) return;
+    // 드래그 직후 따라오는 click이 셀 열기로 오발되지 않게 한 번 막는다
+    suppressClickRef.current = true;
+    setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+    if (Math.abs(s.dx) >= SWIPE_THRESHOLD) {
       if (s.dx < 0) next();
       else prev();
+    }
+  };
+
+  const onTouchStart = (e) => beginSwipe(e.touches[0].clientX, e.touches[0].clientY);
+  const onTouchMove = (e) => moveSwipe(e.touches[0].clientX, e.touches[0].clientY);
+  const onTouchEnd = () => endSwipe();
+  // 데스크톱 마우스 클릭-드래그 스와이프 (터치는 위 touch 핸들러가 담당)
+  const onPointerDown = (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    beginSwipe(e.clientX, e.clientY);
+    const move = (mv) => moveSwipe(mv.clientX, mv.clientY);
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      endSwipe();
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  const onClickCapture = (e) => {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      e.preventDefault();
+      e.stopPropagation();
     }
   };
   const onWheel = (e) => {
@@ -243,6 +281,9 @@ export default function CalendarPage() {
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onTouchCancel={onTouchEnd}
+          onPointerDown={onPointerDown}
+          onClickCapture={onClickCapture}
+          onDragStart={(e) => e.preventDefault()}
           onWheel={onWheel}
         >
           {cells}
