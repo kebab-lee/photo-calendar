@@ -1,6 +1,7 @@
 package com.photocalendar.calendar.service;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Set;
@@ -41,13 +42,13 @@ public class ImageService {
     @Transactional
     public ImageResponse save(Long userId, LocalDate date, MultipartFile file, String fit) {
         validateFit(fit);
-        BufferedImage image = decodeAndValidate(file);
+        byte[] imageBytes = decodeAndValidate(file);
 
         DayEntry entry = getOrCreateEntry(userId, date);
         DayImage existing = dayImageMapper.findByDayEntryId(entry.getId());
 
         // 1) 새 파일을 먼저 생성한다. 리사이즈가 실패해도 옛 이미지는 그대로 보존됨.
-        StoredImage stored = imageStorage.storeResized(image);
+        StoredImage stored = imageStorage.storeResized(imageBytes);
 
         // 2) DB 갱신(옛 행 제거 후 새 행 insert).
         if (existing != null) {
@@ -116,8 +117,12 @@ public class ImageService {
         }
     }
 
-    /** content-type 화이트리스트 + 실제 디코드까지 확인(위장 파일 차단). */
-    private BufferedImage decodeAndValidate(MultipartFile file) {
+    /**
+     * content-type 화이트리스트 + 실제 디코드까지 확인(위장 파일 차단).
+     * 저장 시 EXIF Orientation 자동 회전이 동작하려면 원본 바이트가 필요하므로
+     * 디코드 결과(BufferedImage)가 아닌 원본 바이트를 반환한다.
+     */
+    private byte[] decodeAndValidate(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("이미지 파일이 비어 있습니다.");
         }
@@ -125,15 +130,17 @@ public class ImageService {
         if (contentType == null || !ALLOWED_TYPES.contains(contentType)) {
             throw new IllegalArgumentException("지원하지 않는 이미지 형식입니다(JPEG/PNG).");
         }
+        byte[] imageBytes;
         BufferedImage image;
         try {
-            image = ImageIO.read(file.getInputStream());
+            imageBytes = file.getBytes();
+            image = ImageIO.read(new ByteArrayInputStream(imageBytes));
         } catch (IOException e) {
             throw new IllegalArgumentException("이미지를 읽을 수 없습니다.");
         }
         if (image == null) {
             throw new IllegalArgumentException("유효한 이미지가 아닙니다.");
         }
-        return image;
+        return imageBytes;
     }
 }

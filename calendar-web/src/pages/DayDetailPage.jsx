@@ -157,38 +157,54 @@ export default function DayDetailPage() {
     }
   };
 
-  // pointer 기반 드래그 재정렬: 이동 중 로컬 재정렬, 드롭 시 PUT order로 확정
+  // pointer 기반 드래그 재정렬: 이동 중엔 transform으로만 시각 이동, 드롭 시 PUT order로 확정
   const onGripDown = (ev, id) => {
     ev.preventDefault();
+    const rows = [...listRef.current.querySelectorAll('.todo')];
+    const from = rows.findIndex((r) => String(r.dataset.tid) === String(id));
+    if (from === -1) return;
+    const rects = rows.map((r) => r.getBoundingClientRect());
+    const gap = rows.length > 1 ? rects[1].top - rects[0].bottom : 0;
+    const shift = rects[from].height + gap;
+    const startY = ev.clientY;
+    let to = from;
     setDragId(id);
+
     const move = (mv) => {
-      const rows = [...listRef.current.querySelectorAll('.todo')];
-      let targetId = null;
-      for (const r of rows) {
-        const rect = r.getBoundingClientRect();
-        if (mv.clientY < rect.top + rect.height / 2) {
-          targetId = r.dataset.tid;
-          break;
-        }
+      const dy = mv.clientY - startY;
+      rows[from].style.transform = `translateY(${dy}px)`;
+      const centerY = rects[from].top + rects[from].height / 2 + dy;
+      to = 0;
+      for (let i = 0; i < rows.length; i++) {
+        if (i !== from && centerY > rects[i].top + rects[i].height / 2) to += 1;
       }
+      for (let i = 0; i < rows.length; i++) {
+        if (i === from) continue;
+        if (i > from && i <= to) rows[i].style.transform = `translateY(${-shift}px)`;
+        else if (i < from && i >= to) rows[i].style.transform = `translateY(${shift}px)`;
+        else rows[i].style.transform = '';
+      }
+    };
+    const up = async () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      // transform 제거와 DOM 재배치가 같은 프레임에 일어나도록 transition을 잠시 끈다
+      rows.forEach((r) => {
+        r.style.transition = 'none';
+        r.style.transform = '';
+      });
+      requestAnimationFrame(() => rows.forEach((r) => (r.style.transition = '')));
+      setDragId(null);
+      if (to === from) return;
       const cur = todosRef.current.slice();
-      const from = cur.findIndex((t) => String(t.id) === String(id));
-      let to = targetId ? cur.findIndex((t) => String(t.id) === String(targetId)) : cur.length;
-      if (from === -1) return;
-      if (to > from) to -= 1;
-      if (to === from || to < 0) return;
       const [moved] = cur.splice(from, 1);
       cur.splice(to, 0, moved);
       setTodos(cur);
-    };
-    const up = async () => {
-      setDragId(null);
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
       try {
         const ordered = await reorderTodos(
           date,
-          todosRef.current.map((t) => t.id),
+          cur.map((t) => t.id),
         );
         setTodos(ordered);
       } catch {
@@ -197,6 +213,7 @@ export default function DayDetailPage() {
     };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
   };
 
   // ----- 사진 -----
